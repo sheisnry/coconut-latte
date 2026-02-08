@@ -139,11 +139,11 @@
     </div>
 
     <div class="success" id="success">
-      <h2>Yay!! 💞</h2>
+      <h2>Yay!! 🥳</h2>
       <p>See you on Valentine’s 🌹</p>
     </div>
 
-    <div class="hint" id="hint">Tip: try clicking “No” 😏</div>
+    <div class="hint" id="hint">Tip: Try clicking “No” 😏</div>
   </div>
 
   <script>
@@ -212,16 +212,17 @@
     });
 
     // YES flow
-    yesBtn.addEventListener("click", () => {
-      question.textContent = "Best decision ever 💘";
-      emoji.textContent = "🥰💐";
-      success.style.display = "block";
-      hint.style.display = "none";
-      yesBtn.disabled = true;
-      noBtn.disabled = true;
-      yesBtn.style.filter = "grayscale(.15)";
-      launchConfetti();
-    });
+yesBtn.addEventListener("click", () => {
+  question.textContent = "I knew you'd make a right decision";
+  emoji.textContent = "🥳❤️‍🔥";
+  success.style.display = "block";
+  hint.style.display = "none";
+
+  // ✅ ซ่อนทั้งแถวปุ่มแบบชัวร์สุด
+  btnRow.style.display = "none";
+
+  launchConfetti();
+});
 
     function launchConfetti() {
       confetti.style.display = "block";
@@ -247,3 +248,4 @@
   </script>
 </body>
 </html>
+
