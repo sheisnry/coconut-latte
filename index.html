@@ -219,16 +219,21 @@
     });
 
     // YES flow
-    yesBtn.addEventListener("click", () => {
-      question.textContent = "Best decision ever 💘";
-      emoji.textContent = "🥰💐";
-      success.style.display = "block";
-      hint.style.display = "none";
-      yesBtn.disabled = true;
-      noBtn.disabled = true;
-      yesBtn.style.filter = "grayscale(.15)";
-      launchConfetti();
-    });
+yesBtn.addEventListener("click", () => {
+  question.textContent = "Best decision ever 💘";
+  emoji.textContent = "🥳❤️‍🔥";
+  success.style.display = "block";
+  hint.style.display = "none";
+
+  // ✅ ปิดปุ่มหลังตอบ Yes
+  yesBtn.style.display = "none";
+  noBtn.style.display = "none";
+  btnRow.style.height = "0px";
+  btnRow.style.marginTop = "0px";
+
+  launchConfetti();
+});
+
 
     function launchConfetti() {
       confetti.style.display = "block";
@@ -254,5 +259,6 @@
   </script>
 </body>
 </html>
+
 
 
