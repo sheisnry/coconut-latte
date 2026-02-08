@@ -225,11 +225,11 @@ yesBtn.addEventListener("click", () => {
   success.style.display = "block";
   hint.style.display = "none";
 
-  // ✅ ปิดปุ่มหลังตอบ Yes
-  yesBtn.style.display = "none";
-  noBtn.style.display = "none";
-  btnRow.style.height = "0px";
-  btnRow.style.marginTop = "0px";
+  // ✅ ซ่อนทั้งแถวปุ่มแบบชัวร์สุด
+  btnRow.style.display = "none";
+
+  launchConfetti();
+});
 
   launchConfetti();
 });
@@ -259,6 +259,7 @@ yesBtn.addEventListener("click", () => {
   </script>
 </body>
 </html>
+
 
 
 
