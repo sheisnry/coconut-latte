@@ -96,7 +96,13 @@
       font-size: 22px;
     }
     .success p { margin: 0; opacity: .8; }
-
+    #yayGif{
+  display:block;
+  width: min(260px, 70%);
+  margin: 10px auto 8px;
+  border-radius: 14px;
+  box-shadow: 0 10px 24px rgba(0,0,0,.12);
+}
     /* Confetti */
     .confetti {
       position: absolute;
@@ -220,19 +226,17 @@
 
     // YES flow
 yesBtn.addEventListener("click", () => {
-  question.textContent = "I knew You'd make a right decision";
+  question.textContent = "I knew you'd make the right decision 💘";
   emoji.textContent = "🥳❤️‍🔥";
   success.style.display = "block";
   hint.style.display = "none";
 
+  btnRow.style.display = "none";
+  launchConfetti();
+});
+
   // ✅ ซ่อนทั้งแถวปุ่มแบบชัวร์สุด
   btnRow.style.display = "none";
-
-  launchConfetti();
-});
-
-  launchConfetti();
-});
 
 
     function launchConfetti() {
@@ -259,8 +263,3 @@ yesBtn.addEventListener("click", () => {
   </script>
 </body>
 </html>
-
-
-
-
-
