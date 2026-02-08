@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Valentine?</title>
+  <style>
+    :root { --pink:#ff4d8d; --bg:#ffe6f0; --card:#ffffff; --text:#222; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(circle at 20% 20%, #fff 0, var(--bg) 45%, #ffd1e6 100%);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color: var(--text);
+      overflow: hidden;
+    }
+
+    .card {
+      width: min(520px, 92vw);
+      background: var(--card);
+      border-radius: 20px;
+      padding: 26px 22px 22px;
+      box-shadow: 0 18px 50px rgba(0,0,0,.12);
+      text-align: center;
+      position: relative;
+    }
+
+    .emoji {
+      font-size: 54px;
+      line-height: 1;
+      margin-bottom: 10px;
+      filter: drop-shadow(0 6px 10px rgba(0,0,0,.12));
+      user-select: none;
+    }
+
+    h1 {
+      margin: 8px 0 18px;
+      font-size: clamp(20px, 3.6vw, 30px);
+      letter-spacing: -0.02em;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      align-items: center;
+      margin-top: 10px;
+      position: relative;
+      height: 56px;
+    }
+
+    button {
+      border: 0;
+      padding: 14px 22px;
+      border-radius: 999px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .08s ease, filter .2s ease;
+      user-select: none;
+    }
+    button:active { transform: scale(.98); }
+
+    #yesBtn {
+      background: var(--pink);
+      color: #fff;
+      min-width: 120px;
+      box-shadow: 0 14px 26px rgba(255, 77, 141, .35);
+    }
+    #yesBtn:hover { filter: brightness(1.03); }
+
+    /* "No" starts next to Yes, but we move it around with JS */
+    #noBtn {
+      background: #f2f2f5;
+      color: #333;
+      min-width: 120px;
+      position: relative;
+    }
+
+    .hint {
+      margin-top: 14px;
+      font-size: 12px;
+      opacity: .7;
+    }
+
+    /* Celebration screen */
+    .success {
+      display: none;
+      margin-top: 12px;
+    }
+    .success h2 {
+      margin: 12px 0 6px;
+      font-size: 22px;
+    }
+    .success p { margin: 0; opacity: .8; }
+
+    /* Confetti */
+    .confetti {
+      position: absolute;
+      inset: -10px;
+      pointer-events: none;
+      overflow: hidden;
+      border-radius: 20px;
+      display: none;
+    }
+    .piece {
+      position: absolute;
+      width: 10px;
+      height: 14px;
+      top: -20px;
+      opacity: .9;
+      transform: rotate(0deg);
+      animation: fall 1.25s linear forwards;
+    }
+    @keyframes fall {
+      to { transform: translateY(380px) rotate(420deg); opacity: 1; }
+    }
+
+    /* Small screens: keep buttons reachable */
+    @media (max-width: 380px) {
+      .btn-row { gap: 10px; }
+      button { padding: 13px 18px; min-width: 110px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="card" id="card">
+    <div class="confetti" id="confetti"></div>
+
+    <div class="emoji" id="emoji">🐻‍❄️💗</div>
+    <h1 id="question">Will you be my valentine?</h1>
+
+    <div class="btn-row" id="btnRow">
+      <button id="yesBtn">Yes</button>
+      <button id="noBtn">No</button>
+    </div>
+
+    <div class="success" id="success">
+      <h2>Yay!! 💞</h2>
+      <p>See you on Valentine’s 🌹</p>
+    </div>
+
+    <div class="hint" id="hint">Tip: try clicking “No” 😏</div>
+  </div>
+
+  <script>
+    const card = document.getElementById("card");
+    const btnRow = document.getElementById("btnRow");
+    const yesBtn = document.getElementById("yesBtn");
+    const noBtn = document.getElementById("noBtn");
+    const question = document.getElementById("question");
+    const success = document.getElementById("success");
+    const hint = document.getElementById("hint");
+    const confetti = document.getElementById("confetti");
+    const emoji = document.getElementById("emoji");
+
+    // Optional: personalize
+    // question.textContent = "Nirali, will you be my valentine?";
+
+    // Make "No" dodge the pointer / tap
+    function moveNoButton() {
+      const cardRect = card.getBoundingClientRect();
+      const noRect = noBtn.getBoundingClientRect();
+
+      // Move within the card area, but avoid going outside.
+      const padding = 18;
+      const maxX = cardRect.width - noRect.width - padding * 2;
+      const maxY = cardRect.height - noRect.height - padding * 2;
+
+      // If card is too small, just wiggle.
+      if (maxX < 30 || maxY < 30) {
+        noBtn.style.transform = `translateX(${(Math.random() * 16 - 8).toFixed(0)}px)`;
+        return;
+      }
+
+      // Random position inside card
+      const x = Math.floor(Math.random() * maxX) + padding;
+      const y = Math.floor(Math.random() * maxY) + padding;
+
+      // Convert to translate relative to its original position in the row
+      // We position it absolutely within the card the first time we move.
+      if (getComputedStyle(noBtn).position !== "absolute") {
+        const rowRect = btnRow.getBoundingClientRect();
+        const startLeft = noRect.left - cardRect.left;
+        const startTop = noRect.top - cardRect.top;
+
+        noBtn.style.position = "absolute";
+        noBtn.style.left = `${startLeft}px`;
+        noBtn.style.top = `${startTop}px`;
+      }
+
+      noBtn.style.left = `${x}px`;
+      noBtn.style.top = `${y}px`;
+    }
+
+    // Desktop hover
+    noBtn.addEventListener("mouseenter", moveNoButton);
+
+    // Mobile tap (touchstart so it reacts instantly)
+    noBtn.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+      moveNoButton();
+    }, { passive: false });
+
+    // Also move on click (for anyone who catches it)
+    noBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      moveNoButton();
+    });
+
+    // YES flow
+    yesBtn.addEventListener("click", () => {
+      question.textContent = "Best decision ever 💘";
+      emoji.textContent = "🥰💐";
+      success.style.display = "block";
+      hint.style.display = "none";
+      yesBtn.disabled = true;
+      noBtn.disabled = true;
+      yesBtn.style.filter = "grayscale(.15)";
+      launchConfetti();
+    });
+
+    function launchConfetti() {
+      confetti.style.display = "block";
+      confetti.innerHTML = "";
+      const colors = ["#ff4d8d","#ffcc00","#7dd3fc","#a7f3d0","#c4b5fd","#fb7185"];
+      const pieces = 44;
+
+      for (let i = 0; i < pieces; i++) {
+        const d = document.createElement("div");
+        d.className = "piece";
+        d.style.left = Math.random() * 100 + "%";
+        d.style.background = colors[Math.floor(Math.random() * colors.length)];
+        d.style.animationDelay = (Math.random() * 0.15) + "s";
+        d.style.transform = `rotate(${Math.random()*180}deg)`;
+        d.style.width = (8 + Math.random()*8) + "px";
+        d.style.height = (10 + Math.random()*10) + "px";
+        confetti.appendChild(d);
+      }
+
+      // Cleanup after animation
+      setTimeout(() => { confetti.style.display = "none"; }, 1700);
+    }
+  </script>
+</body>
+</html>
